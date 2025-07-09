@@ -37,7 +37,7 @@ public class DevicesService {
 
         Devices device = new Devices();
         device.setDeviceUid(dto.getDeviceUid());
-        device.setOnerId(dto.getOnerId());
+//        device.setOnerId(dto.getOnerId());
         device.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         devicesRepository.save(device);
@@ -52,9 +52,10 @@ public class DevicesService {
             );
 
             final String token = jwtService.generateToken(loginDTO.getDeviceUid());
-            return new LoginResponse("Login successful", token);
+
+            return new LoginResponse(true,"Login successful", token);
         } catch (Exception e) {
-            return new LoginResponse("Invalid device or password", null);
+            return new LoginResponse(false,"Invalid device or password", null);
         }
     }
 
