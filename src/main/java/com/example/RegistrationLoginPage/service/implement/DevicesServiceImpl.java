@@ -1,5 +1,6 @@
 package com.example.RegistrationLoginPage.service.implement;
 
+import com.example.RegistrationLoginPage.dto.CommonResponseDTO;
 import com.example.RegistrationLoginPage.dto.DevicesDTO;
 import com.example.RegistrationLoginPage.dto.LoginDTO;
 import com.example.RegistrationLoginPage.dto.LoginResponse;
@@ -27,21 +28,31 @@ public class DevicesServiceImpl implements DevicesService {
     private JwtService jwtService;
 
     @Override
-    public String registerDevice(DevicesDTO dto) {
-        Devices device = new Devices();
-        device.setDeviceUid(dto.getDeviceUid());
-        device.setPassword(passwordEncoder.encode(dto.getPassword()));
-        device.setApiKey(dto.getApiKey());
-        device.setAuthDomain(dto.getAuthDomain());
-        device.setDatabaseURL(dto.getDatabaseURL());
-        device.setProjectId(dto.getProjectId());
-        device.setStorageBucket(dto.getStorageBucket());
-        device.setMessagingSenderId(dto.getMessagingSenderId());
-        device.setAppId(dto.getAppId());
-        device.setProject_password(dto.getProject_password());
-        device.setTsx(dto.getTsx());
-        devicesRepository.save(device);
-        return "Device Registered Successfully!";
+    public CommonResponseDTO registerDevice(DevicesDTO dto) {
+        try {
+            if (devicesRepository.findByDeviceUid(dto.getDeviceUid()).isPresent()) {
+                return new CommonResponseDTO(false, "Device ID already taken!");
+            }
+
+            Devices device = new Devices();
+            device.setDeviceUid(dto.getDeviceUid());
+            device.setPassword(passwordEncoder.encode(dto.getPassword()));
+            device.setApiKey(dto.getApiKey());
+            device.setAuthDomain(dto.getAuthDomain());
+            device.setDatabaseURL(dto.getDatabaseURL());
+            device.setProjectId(dto.getProjectId());
+            device.setStorageBucket(dto.getStorageBucket());
+            device.setMessagingSenderId(dto.getMessagingSenderId());
+            device.setAppId(dto.getAppId());
+            device.setProject_password(dto.getProject_password());
+            device.setTsx(dto.getTsx());
+
+            devicesRepository.save(device);
+
+            return new CommonResponseDTO(true, "Device registered successfully!");
+        } catch (Exception e) {
+            return new CommonResponseDTO(false, "Internal server error during registration: {} ",e.getMessage());
+        }
     }
 
     @Override
@@ -52,7 +63,7 @@ public class DevicesServiceImpl implements DevicesService {
             throw new RuntimeException("Invalid password");
         }
         String token = jwtService.generateToken(device.getDeviceUid());
-        return new LoginResponse(true, token, "Login Successful!");
+        return new LoginResponse(true, "Login Successful!",token);
 
     }
 
