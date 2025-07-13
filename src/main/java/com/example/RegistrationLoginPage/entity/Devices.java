@@ -1,7 +1,9 @@
 package com.example.RegistrationLoginPage.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "devices")
 public class Devices {
@@ -15,28 +17,32 @@ public class Devices {
 
     @Column(name = "password", length = 255)
     private String password;
+//-----------------------------------
+    @Column(name = "apiKey", length = 255)
+    private String apiKey;
 
-    public String getDeviceUid() {
-        return deviceUid;
-    }
+    @Column(name = "authDomain", length = 255)
+    private String authDomain;
 
-    public void setDeviceUid(String deviceUid) {
-        this.deviceUid = deviceUid;
-    }
+    @Column(name = "databaseURL", length = 255)
+    private String databaseURL;
 
-    public String getOnerId() {
-        return onerId;
-    }
+    @Column(name = "projectId", length = 255)
+    private String projectId;
 
-    public void setOnerId(String onerId) {
-        this.onerId = onerId;
-    }
+    @Column(name = "storageBucket", length = 255)
+    private String storageBucket;
 
-    public String getPassword() {
-        return password;
-    }
+    @Column(name = "messagingSenderId", length = 255)
+    private String messagingSenderId;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @Column(name = "appId", length = 255)
+    private String appId;
+
+    @Column(name = "project_password", length = 255)
+    private String project_password;
+
+    @Column(name = "tsx", length = 255)
+    private String tsx;
+
 }

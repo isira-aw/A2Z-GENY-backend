@@ -1,23 +1,20 @@
 package com.example.RegistrationLoginPage.dto;
 
+import lombok.Data;
+
+@Data
 public class DevicesDTO {
     private String deviceUid;
     private String password;
-    // Getters & setters
 
-    public String getDeviceUid() {
-        return deviceUid;
-    }
+    private String apiKey;
+    private String authDomain;
+    private String databaseURL;
+    private String projectId;
+    private String storageBucket;
+    private String messagingSenderId;
+    private String appId;
+    private String project_password;
+    private String tsx;
 
-    public void setDeviceUid(String deviceUid) {
-        this.deviceUid = deviceUid;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
