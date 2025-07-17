@@ -36,7 +36,7 @@ public class DevicesController {
             LoginResponse response = devicesService.loginDevice(loginDTO);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            LoginResponse errorResponse = new LoginResponse(false, "Login failed: " + e.getMessage(),null );
+            LoginResponse errorResponse = new LoginResponse(false, "Login failed: " + e.getMessage(), null);
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
@@ -48,31 +48,37 @@ public class DevicesController {
 
     @PostMapping("/config")
     public ResponseEntity<CommonResponseDTO> getDeviceConfig(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().body(
-                    new CommonResponseDTO(false, "Missing or invalid Authorization header")
-            );
-        }
-        String jwt = authHeader.substring(7);
-        String deviceUid = devicesService.extractDeviceUidFromToken(jwt);
+        try {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.badRequest().body(
+                        new CommonResponseDTO(false, "Missing or invalid Authorization header")
+                );
+            }
+            String jwt = authHeader.substring(7);
+            String deviceUid = devicesService.extractDeviceUidFromToken(jwt);
 
-        if (deviceUid == null) {
-            return ResponseEntity.status(401).body(
-                    new CommonResponseDTO(false, "Invalid token")
+            if (deviceUid == null) {
+                return ResponseEntity.status(401).body(
+                        new CommonResponseDTO(false, "Invalid token")
+                );
+            }
+            Devices device = devicesService.getDeviceByUid(deviceUid);
+            if (device == null) {
+                return ResponseEntity.status(404).body(
+                        new CommonResponseDTO(false, "Device not found")
+                );
+            }
+            // Optional: Exclude password from the device info if needed
+            device.setPassword(null);
+            return ResponseEntity.ok(
+                    new CommonResponseDTO(true, "Device found", device)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    new CommonResponseDTO(false, "Bad Request ")
             );
         }
-        Devices device = devicesService.getDeviceByUid(deviceUid);
-        if (device == null) {
-            return ResponseEntity.status(404).body(
-                    new CommonResponseDTO(false, "Device not found")
-            );
-        }
-        // Optional: Exclude password from the device info if needed
-        device.setPassword(null);
-        return ResponseEntity.ok(
-                new CommonResponseDTO(true, "Device found", device)
-        );
     }
 
 }
