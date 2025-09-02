@@ -2,6 +2,7 @@ package com.example.RegistrationLoginPage.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -12,12 +13,16 @@ public class Devices {
     @Column(name = "device_uid", length = 255)
     private String deviceUid;
 
-    @Column(name = "oner_id", length = 255)
-    private String onerId;
+    @Column(name = "device_name", length = 255)
+    private String deviceName;
 
     @Column(name = "password", length = 255)
     private String password;
-//-----------------------------------
+
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
+
+    // Firebase configuration fields
     @Column(name = "apiKey", length = 255)
     private String apiKey;
 
@@ -45,4 +50,13 @@ public class Devices {
     @Column(name = "tsx", length = 255)
     private String tsx;
 
+    // Many devices belong to one user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @PreUpdate
+    protected void onUpdate() {
+        lastLogin = LocalDateTime.now();
+    }
 }
